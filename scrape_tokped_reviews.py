@@ -214,6 +214,20 @@ def has_text_review(review: Dict) -> bool:
     return bool(text and text.strip())
 
 
+def has_variant(review: Dict) -> bool:
+    product = review.get("product") or {}
+    variant = (product.get("productVariant") or {}).get("variantName")
+    return bool(variant and variant.strip())
+
+
+def is_usable_review(review: Dict, skip_empty_text: bool) -> bool:
+    if skip_empty_text and not has_text_review(review):
+        return False
+    if not has_variant(review):
+        return False
+    return True
+
+
 def parse_rating_quotas(raw: str) -> Dict[int, int]:
     quotas: Dict[int, int] = {}
     for part in raw.split(","):
@@ -321,7 +335,7 @@ def main() -> int:
                     args.page_size,
                     filter_by=f"rating={rating}",
                 ):
-                    if args.skip_empty_text and not has_text_review(item):
+                    if not is_usable_review(item, args.skip_empty_text):
                         continue
                     review_items.append(item)
                     collected_for_rating += 1
@@ -335,7 +349,7 @@ def main() -> int:
                     )
         else:
             for item in iter_reviews(session, shop_id, args.limit * 5, args.page_size):
-                if args.skip_empty_text and not has_text_review(item):
+                if not is_usable_review(item, args.skip_empty_text):
                     continue
                 review_items.append(item)
                 if len(review_items) >= target_limit:

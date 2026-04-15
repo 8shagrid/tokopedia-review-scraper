@@ -5,7 +5,7 @@ from typing import Dict, List
 
 from scrape_tokped_reviews import (
     get_shop_id,
-    has_text_review,
+    is_usable_review,
     iter_reviews,
     normalize_rows,
     parse_args,
@@ -37,7 +37,7 @@ def collect_all_reviews_for_rating(
             continue
         seen_ids.add(review_id)
 
-        if not has_text_review(item):
+        if not is_usable_review(item, skip_empty_text=True):
             continue
 
         results.append(item)
@@ -76,7 +76,7 @@ def main() -> int:
                 page_size=args.page_size,
                 filter_by="rating=5",
             ):
-                if not has_text_review(item):
+                if not is_usable_review(item, skip_empty_text=True):
                     continue
                 five_star_items.append(item)
                 if len(five_star_items) >= quota_5_star:

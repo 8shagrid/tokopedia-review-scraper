@@ -7,10 +7,11 @@ Script yang tersedia:
   Untuk kasus umum:
   - ambil review terbaru
   - skip review tanpa teks
+  - skip review dengan varian kosong
   - kuota per rating, mis. `5:500,4:300,3:300,2:200,1:200`
 - `scrape_tokped_reviews_prior_bags.py`
   Untuk kasus khusus `prior-bags`:
-  - ambil semua review `1-4 star` yang punya teks
+  - ambil semua review `1-4 star` yang punya teks dan varian
   - isi sisanya dengan `5 star` sampai total `1500`
 - `convert_relative_dates.py`
   Untuk menambahkan field `tanggal_real` dari field `tanggal` relatif.
@@ -41,6 +42,9 @@ Kalau mau skip review tanpa teks:
 ```bash
 python scrape_tokped_reviews.py --url https://www.tokopedia.com/mossdoom/review --limit 1500 --page-size 50 --skip-empty-text --format json --output tokped_reviews_latest_1500_with_text.json
 ```
+
+Catatan:
+- review dengan `varian` kosong akan selalu dilewati
 
 ### 2. Ambil review dengan kuota per rating
 
@@ -120,3 +124,4 @@ Field tambahan dari script konversi tanggal:
 - `tanggal_real` adalah hasil konversi berbasis `--base-date`.
 - Untuk kasus `bulan lalu` dan `tahun lalu`, script membuat tanggal semi-random yang tetap konsisten untuk row yang sama.
 - Dataset hasil scrape tidak disarankan untuk dipush ke repo publik. `.gitignore` di repo ini mengecualikan file output JSON.
+- Review dengan `varian` kosong tidak akan masuk ke hasil akhir.
