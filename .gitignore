@@ -1,0 +1,10 @@
+node_modules/
+__pycache__/
+*.pyc
+
+# Generated datasets
+*_reviews_*.json
+
+# Local npm files from exploration
+package.json
+package-lock.json
